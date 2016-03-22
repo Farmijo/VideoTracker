@@ -40,27 +40,48 @@ while (continueWithMeanShift == true & numItt < 20)
     % ****************************
 
     % get pixel locations inside ellipse
-    [y0_RowCol, y0_loc] = getPointsInEllipse(F_I, y0, hCurr, m);
+    [y0_RowCol, y0_loc] = getPointsInEllipse(y0, hCurr, ImgSize);
     % get histogram p_y0 of model
-    [p_y0, binNums] = TO DO
+    [p_y0, binNums] = probProfile(hCurr, y0, y0_RowCol, F_I(y0_loc), m);
         
 
     % ****************************
     % * get weights              *
     % ****************************
-    TO DO 
+    
+    for i = 1:length(binNums)
+        w(i) = sqrt(q(binNums(i)+1)/p_y0(binNums(i)+1));
+    end
+    weightsum = sum(w); %calculate the sum of weights to normalize
+    xweight = sum((y0_RowCol(:,1).*w')/weightsum); %calculate normalized weights on x column
+    yweight = sum((y0_RowCol(:,2).*w')/weightsum); %calculate normalized weights on y column
+    
 
     % ****************************
-    % * get y1                   * 
+    % * get y1                   *
     % ****************************
-
-    y1 = TO DO
+    
+    y1 = round([xweight, yweight]);
     
     % ****************************
     % * check stoping condition  *
     % ****************************
-    TO DO
+    
+    p = getModel(F_I, y1, hCurr, m); %calculate p histogram to check stopping condition
+    
+    Bat0 = sum(sqrt(p_y0.*q)); %calculate Battacharyya coefficient for the two p
+    Bat1 = sum(sqrt(p.*q));
 
+    if Bat1 < Bat0
+        y1 = y0;
+        continueWithMeanShift = false;
+    else if (abs(y1(1,1)-y0(1,1))>2) || (abs(y1(1,2)-y0(1,2))>2)
+            y0 = y1;
+            continueWithMeanShift = true; 
+        else
+            continueWithMeanShift = false;
+        end
+    end
     numItt = numItt + 1;
 end
 y1 = round(y1);

@@ -6,13 +6,13 @@ clc
 video_name = 'hall_qcif.yuv';
 
 startFrame = 40;
-nFrames = 50; %;250;
+nFrames = 250%;250;
 
 % Mean-Shift Parameters
 % Width and height of the ellispe (target model shape)
 h = [25 7];%[60 20];
 % Target position (center of the ellipse)
-y = [71 61];
+y = [71 61]
 % Number of bins in the spatially-weighted histograms
 m = 5;
 
@@ -27,18 +27,18 @@ displayImages = true;
 video=video(startFrame:end);
 imgRGB=imgRGB(:,:,:,startFrame:end);
 
-% 
+
 % display the image used to derive the model. Note the image is displayed
-% % using the specified number of bins.
-% I = video(1).cdata;
-% R=I(:,:,1);
-% G=I(:,:,2);
-% B=I(:,:,3);
-% 
-% I_bined = uint8(reshape(binNum(reshape(I,1,[]),m),size(I,1),[]));
-% figure; 
-% imshow(I_bined,[]); 
-% hold on;
+% using the specified number of bins.
+%I = video(1).cdata;
+%R=I(:,:,1);
+%G=I(:,:,2);
+%B=I(:,:,3)
+
+%I_bined = uint8(reshape(binNum(reshape(I,1,[]),m),size(I,1),[]));
+%figure; 
+%imshow(I_bined,[]); 
+%hold on;
 
 I = video(1).cdata;
 [RowCol, loc] = getPointsInEllipseBorder(y, h, size(I));
